@@ -34,7 +34,7 @@ QVariant StopsModel::data(const QModelIndex &index, int role) const
     {
         return QVariant::fromValue(oStop.coordinate());
     }
-    else if (role == CoordinateRole)
+    else if (role == DistanceRole)
     {
         return oStop.distance();
     }
