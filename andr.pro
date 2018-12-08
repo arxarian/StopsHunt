@@ -14,7 +14,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    stopsmodel.cpp
+    stopsmodel.cpp \
+    contoller.cpp \
+    positionmanager.cpp
 
 RESOURCES += \
     qml.qrc
@@ -31,4 +33,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    stopsmodel.h
+    stopsmodel.h \
+    contoller.h \
+    positionmanager.h

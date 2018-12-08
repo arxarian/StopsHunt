@@ -1,6 +1,5 @@
 import QtQuick 2.9
 import QtQuick.Window 2.2
-import QtPositioning 5.12
 
 Window {
     visible: true
@@ -61,32 +60,11 @@ Window {
                 }
 
                 Text {
-                    property int distance: positionSource.position.coordinate.distanceTo(model.coordinate)
-
                     height: parent.height
                     width: parent.width * 0.25
-                    text: positionSource.sourceError === PositionSource.NoError ? distance + " m" : "?"
+                    text: model.distance + " m"
                 }
             }
-        }
-    }
-
-    PositionSource {
-        id: positionSource
-
-        active: true
-        updateInterval: 1000
-
-        onPositionChanged: {
-            var coord = positionSource.position.coordinate;
-            console.log("coordinate:", coord.longitude, coord.latitude, valid)
-        }
-
-        onSourceErrorChanged: {
-            if (sourceError == PositionSource.NoError)
-                return
-
-            console.log("sourceError", sourceError, valid)
         }
     }
 }

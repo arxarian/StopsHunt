@@ -74,6 +74,24 @@ bool StopsModel::setData(const QModelIndex &index, const QVariant &value, int ro
     return false;
 }
 
+void StopsModel::updatePosition(QGeoPositionInfo oPositionInfo)
+{
+    const QGeoCoordinate& oCoordinate = oPositionInfo.coordinate();
+
+    for (qint32 nIndex = 0; nIndex < m_arrStops.count(); ++nIndex)
+    {
+        const QGeoCoordinate& oStopCoordinate = m_arrStops.at(nIndex).coordinate();
+        const qint32 nDistance_m = static_cast<qint32>(oCoordinate.distanceTo(oStopCoordinate));
+
+        m_arrStops[nIndex].setDistance(nDistance_m);
+    }
+
+    QModelIndex oIndexTop = createIndex(0, 0);
+    QModelIndex oIndexBottom = createIndex(m_arrStops.count(), 0);
+
+    emit dataChanged(oIndexTop, oIndexBottom, QVector<int>() << DistanceRole);
+}
+
 QHash<int, QByteArray> StopsModel::roleNames() const
 {
     QHash<int, QByteArray> roles;

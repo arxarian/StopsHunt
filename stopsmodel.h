@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QGeoCoordinate>
+#include <QGeoPositionInfo>
 
 class Stop
 {
@@ -44,6 +45,8 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+
+    void updatePosition(QGeoPositionInfo oPositionInfo);
 
 protected:
     QHash<int, QByteArray> roleNames() const override;
