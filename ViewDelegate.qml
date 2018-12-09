@@ -6,7 +6,8 @@ Item {
 
     property real standardHeight: 0
     property real expandedHeight: 0
-    property bool gainable: !model.taken && model.distance < 20
+    property bool validDistance: model.distance > -1
+    property bool gainable: !model.taken && model.distance < 20 && validDistance
 
     height: gainable ? expandedHeight : standardHeight
 
@@ -33,7 +34,7 @@ Item {
         Text {
             height: parent.height
             width: parent.width * 0.20
-            text: model.distance + " m"
+            text: validDistance ? model.distance + " m" : "?"
         }
 
         Loader {

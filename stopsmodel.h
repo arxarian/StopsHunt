@@ -23,7 +23,7 @@ public:
 private:
     QString m_strName;
     QGeoCoordinate m_oCoordinate;
-    qint32 m_nDistance = 0;
+    qint32 m_nDistance = -1;
     bool m_bTaken = false;
 
 };
