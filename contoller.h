@@ -26,12 +26,13 @@ public slots:
 private:
     QQmlApplicationEngine m_oEngine;
     StopsModel m_arrStopsModel;
-    QSortFilterProxyModel m_arrProxyModel;
+    QSortFilterProxyModel m_arrTakenModel;
+    QSortFilterProxyModel m_arrSortByDistanceModel;
 
     QPointer<PositionManager> m_pPositionManager;
 
     void LoadData();
-    void SetModel();
+    void SetModels();
     void LoadEngine();
 };
 

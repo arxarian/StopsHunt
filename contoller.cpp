@@ -6,7 +6,7 @@
 Contoller::Contoller(QObject *parent) : QObject(parent)
 {
     LoadData();
-    SetModel();
+    SetModels();
     LoadEngine();
 
     m_pPositionManager = new PositionManager(this);
@@ -37,16 +37,20 @@ void Contoller::LoadData()
     }
 }
 
-void Contoller::SetModel()
+void Contoller::SetModels()
 {
-    m_arrProxyModel.setSourceModel(&m_arrStopsModel);
-    m_arrProxyModel.setSortRole(StopsModel::DistanceRole);
-    m_arrProxyModel.sort(0, Qt::AscendingOrder);
+    m_arrSortByDistanceModel.setSourceModel(&m_arrStopsModel);
+    m_arrSortByDistanceModel.setSortRole(StopsModel::DistanceRole);
+    m_arrSortByDistanceModel.sort(0, Qt::AscendingOrder);
+
+    m_arrTakenModel.setSourceModel(&m_arrSortByDistanceModel);
+    m_arrTakenModel.setSortRole(StopsModel::TakenRole);
+    m_arrTakenModel.sort(0, Qt::AscendingOrder);
 }
 
 void Contoller::LoadEngine()
 {
-    m_oEngine.rootContext()->setContextProperty("stopsModel", &m_arrProxyModel);
+    m_oEngine.rootContext()->setContextProperty("stopsModel", &m_arrTakenModel);
     m_oEngine.rootContext()->setContextProperty("originalModel", &m_arrStopsModel);
 
     m_oEngine.load(QUrl(QStringLiteral("qrc:/main.qml")));
