@@ -15,56 +15,17 @@ Window {
         anchors.fill: parent
         model: stopsModel
 
-        header: Item {
-            z: 1
-            height: view.itemHeight
+        header: ViewHeader {
+            height: view.itemHeight * 2
             width: parent.width
-
-            Rectangle {
-                anchors.fill: parent
-                color: "gold"
-            }
-
-            Row {
-                anchors.fill: parent
-
-                Text {
-                    height: parent.height
-                    width: parent.width * 0.75
-                    text: "Stop name"
-                    font.bold: true
-                }
-
-                Text {
-                    height: parent.height
-                    width: parent.width * 0.25
-                    text: "Distance"
-                    font.bold: true
-                }
-            }
         }
 
         headerPositioning: ListView.PullBackHeader
 
-        delegate: Item {
-            height: view.itemHeight
-            width: parent.width
-
-            Row {
-                anchors.fill: parent
-
-                Text {
-                    height: parent.height
-                    width: parent.width * 0.75
-                    text: model.name
-                }
-
-                Text {
-                    height: parent.height
-                    width: parent.width * 0.25
-                    text: model.distance + " m"
-                }
-            }
+        delegate: ViewDelegate {
+            standardHeight: view.itemHeight
+            expandedHeight: view.itemHeight * 2
+            width: view.width
         }
     }
 }

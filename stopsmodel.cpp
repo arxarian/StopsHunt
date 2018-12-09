@@ -2,14 +2,19 @@
 
 StopsModel::StopsModel(QObject *parent) : QAbstractListModel(parent)
 {
-    //
+    m_pStopsData = new QSettings();
 }
 
 void StopsModel::add(const Stop &oStop)
 {
+    bool bTaken = m_pStopsData->value(QString("stops/%1").arg(oStop.name()), false).toBool();
+
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_arrStops << oStop;
+    m_arrStops.last().setTaken(bTaken);
     endInsertRows();
+
+    if (bTaken) ++m_nTaken;
 }
 
 int StopsModel::rowCount(const QModelIndex &parent) const
@@ -64,6 +69,10 @@ bool StopsModel::setData(const QModelIndex &index, const QVariant &value, int ro
         else if (role == TakenRole)
         {
             oStop.setTaken(value.toBool());
+            m_pStopsData->setValue(QString("stops/%1").arg(oStop.name()), true);
+            ++m_nTaken;
+
+            emit progressChanged();
         }
 
         emit dataChanged(index, index, QVector<int>() << role);
@@ -100,6 +109,11 @@ QHash<int, QByteArray> StopsModel::roleNames() const
     roles[DistanceRole] = "distance";
     roles[TakenRole] = "taken";
     return roles;
+}
+
+qreal StopsModel::progress()
+{
+    return static_cast<qreal>(m_nTaken) / m_arrStops.count();
 }
 
 Stop::Stop(const QString &strName, const QGeoCoordinate &oCoordinate)

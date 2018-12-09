@@ -4,6 +4,8 @@
 #include <QAbstractListModel>
 #include <QGeoCoordinate>
 #include <QGeoPositionInfo>
+#include <QPointer>
+#include <QSettings>
 
 class Stop
 {
@@ -29,6 +31,8 @@ private:
 class StopsModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
+
 public:
     enum StopsRoles
     {
@@ -52,7 +56,14 @@ protected:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
+    qreal progress();
+    qint32 m_nTaken = 0;
+
+    QPointer<QSettings> m_pStopsData;
     QList<Stop> m_arrStops;
+
+signals:
+    void progressChanged();
 };
 
 #endif // STOPSMODEL_H

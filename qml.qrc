@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>stops.csv</file>
+        <file>ViewHeader.qml</file>
+        <file>ViewDelegate.qml</file>
+        <file>tram_collect.png</file>
     </qresource>
 </RCC>

@@ -47,6 +47,7 @@ void Contoller::SetModel()
 void Contoller::LoadEngine()
 {
     m_oEngine.rootContext()->setContextProperty("stopsModel", &m_arrProxyModel);
+    m_oEngine.rootContext()->setContextProperty("originalModel", &m_arrStopsModel);
 
     m_oEngine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (m_oEngine.rootObjects().isEmpty())
