@@ -1,5 +1,5 @@
-#ifndef STOPSMODEL_H
-#define STOPSMODEL_H
+
+#pragma once
 
 #include <QAbstractListModel>
 #include <QGeoCoordinate>
@@ -7,26 +7,7 @@
 #include <QPointer>
 #include <QSettings>
 
-class Stop
-{
-public:
-    Stop(const QString &strName, const QGeoCoordinate &oCoordinate);
-
-    QString name() const;
-    QGeoCoordinate coordinate() const;
-    qint32 distance() const;
-    bool taken() const;
-
-    void setDistance(const qint32 nDistance);
-    void setTaken(const bool bTaken);
-
-private:
-    QString m_strName;
-    QGeoCoordinate m_oCoordinate;
-    qint32 m_nDistance = -1;
-    bool m_bTaken = false;
-
-};
+#include "stopitem.h"
 
 class StopsModel : public QAbstractListModel
 {
@@ -34,36 +15,34 @@ class StopsModel : public QAbstractListModel
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
 
 public:
-    enum StopsRoles
+    enum Roles
     {
-        NameRole = Qt::UserRole + 1,
-        CoordinateRole,
+        ObjectRole = Qt::UserRole,
         DistanceRole,
         TakenRole
     };
 
     explicit StopsModel(QObject *parent = nullptr);
-
-    void add(const Stop &oStop);
+    ~StopsModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
-    void updatePosition(QGeoPositionInfo oPositionInfo);
+    qreal progress();
+    void updatePosition(const QGeoPositionInfo &oPositionInfo);
+
+    Q_INVOKABLE void setTaken(const QString& name);
+
+signals:
+    void progressChanged(qreal progress);
 
 protected:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
-    qreal progress();
-    qint32 m_nTaken = 0;
+    qint32 m_taken = 0;
 
-    QPointer<QSettings> m_pStopsData;
-    QList<Stop> m_arrStops;
-
-signals:
-    void progressChanged();
+    QPointer<QSettings> m_stopsPersistentData;
+    QList<QPointer<StopItem>> m_stopsModel;
+    qreal m_progress;
 };
-
-#endif // STOPSMODEL_H

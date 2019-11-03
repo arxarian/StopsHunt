@@ -1,6 +1,6 @@
 #include <QGuiApplication>
 
-#include "contoller.h"
+#include "application.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    Contoller controler;
+    Application application;
 
-    return app.exec();
+    return QGuiApplication::exec();
 }

@@ -1,5 +1,5 @@
-#ifndef POSITIONMANAGER_H
-#define POSITIONMANAGER_H
+
+#pragma once
 
 #include <QGeoPositionInfo>
 #include <QGeoPositionInfoSource>
@@ -11,16 +11,15 @@ class PositionManager : public QObject
     Q_OBJECT
 public:
     explicit PositionManager(QObject *parent = nullptr);
-    void Start();
+
+    void start();
 
 signals:
-    void PositionUpdated(QGeoPositionInfo oPositionInfo);
+    void positionUpdated(QGeoPositionInfo positionInfo);
 
 private slots:
-    void OnUpdateTimeout();
+    void onUpdateTimeout();
 
 private:
-    QPointer<QGeoPositionInfoSource> m_pPositionSource;
+    QPointer<QGeoPositionInfoSource> m_positionSource;
 };
-
-#endif // POSITIONMANAGER_H

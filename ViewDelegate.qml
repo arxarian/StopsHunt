@@ -1,13 +1,15 @@
 import QtQuick 2.9
-import QtQuick.Window 2.2
+import Datamodels 1.0
 
 Item {
     id: delegate
 
+    property StopItem stopItem: model.object
+
     property real standardHeight: 0
     property real expandedHeight: 0
-    property bool validDistance: model.distance > -1
-    property bool gainable: !model.taken && model.distance < 20 && validDistance
+    property bool validDistance: stopItem.distance > -1
+    property bool gainable: !stopItem.taken && stopItem.distance < 20 && validDistance
 
     height: gainable ? expandedHeight : standardHeight
 
@@ -15,7 +17,7 @@ Item {
 
     Loader {
         anchors.fill: parent
-        active: model.taken
+        active: stopItem.taken
         sourceComponent: Rectangle {
             color: "lightgreen"
         }
@@ -28,13 +30,13 @@ Item {
         Text {
             height: parent.height
             width: parent.width * 0.65
-            text: model.name
+            text: stopItem.name
         }
 
         Text {
             height: parent.height
             width: parent.width * 0.20
-            text: validDistance ? model.distance + " m" : "?"
+            text: validDistance ? stopItem.distance + " m" : "?"
         }
 
         Loader {
@@ -59,7 +61,8 @@ Item {
 
                     onStopped: {
                         if (image.opacity === 0) {
-                            model.taken = true
+                            stopItem.taken = true
+                            originalModel.setTaken(stopItem.name)   // TODO: wokraround for on getting dataChanged signal
                         }
                     }
                 }

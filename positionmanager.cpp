@@ -3,33 +3,35 @@
 
 #include "positionmanager.h"
 
+constexpr qint32 PositionUpdateTime_ms = 1000;
+
 PositionManager::PositionManager(QObject *parent) : QObject(parent)
 {
-    m_pPositionSource = QGeoPositionInfoSource::createDefaultSource(this);
+    m_positionSource = QGeoPositionInfoSource::createDefaultSource(this);
 
-    if (m_pPositionSource == nullptr)
+    if (m_positionSource == nullptr)
     {
-        qInfo("failed source");
+        qInfo("no position source available");
     }
     else
     {
-        connect(m_pPositionSource, &QGeoPositionInfoSource::positionUpdated, this, &PositionManager::PositionUpdated);
-        connect(m_pPositionSource, &QGeoPositionInfoSource::updateTimeout, this, &PositionManager::OnUpdateTimeout);
-        m_pPositionSource->setUpdateInterval(1000);
+        connect(m_positionSource, &QGeoPositionInfoSource::positionUpdated, this, &PositionManager::positionUpdated);
+        connect(m_positionSource, &QGeoPositionInfoSource::updateTimeout, this, &PositionManager::onUpdateTimeout);
+        m_positionSource->setUpdateInterval(PositionUpdateTime_ms);
 
-        qInfo() << "sources found:" << m_pPositionSource->availableSources();
+        qInfo() << "position sources found:" << m_positionSource->availableSources();
     }
 }
 
-void PositionManager::Start()
+void PositionManager::start()
 {
-    if (m_pPositionSource)
+    if (m_positionSource)
     {
-        m_pPositionSource->startUpdates();
+        m_positionSource->startUpdates();
     }
 }
 
-void PositionManager::OnUpdateTimeout()
+void PositionManager::onUpdateTimeout()
 {
     qDebug() << "update failed";
 }
