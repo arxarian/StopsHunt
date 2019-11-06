@@ -3,6 +3,7 @@
 #include "dataprovider.h"
 
 const QHash<qint32, QByteArray> RoleNames = {{StopsModel::Roles::ObjectRole, "object"},
+                                             {StopsModel::Roles::NameRole, "name"},
                                              {StopsModel::Roles::DistanceRole, "distance"},
                                              {StopsModel::Roles::TakenRole, "taken"}};
 
@@ -23,6 +24,18 @@ StopsModel::StopsModel(QObject *parent) : QAbstractListModel(parent)
     }
 
     endResetModel();
+
+    connect(this, &QAbstractListModel::dataChanged, this, [this] (const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles){
+        Q_UNUSED(bottomRight)
+        if (roles.first() == StopsModel::TakenRole)
+        {
+            const QString name = data(topLeft, StopsModel::NameRole).toString();
+            m_stopsPersistentData->setValue(QString("stops/%1").arg(name), true);
+            ++m_taken;
+
+            emit progressChanged(progress());
+        }
+    });
 }
 
 StopsModel::~StopsModel() {}
@@ -46,6 +59,10 @@ QVariant StopsModel::data(const QModelIndex &index, int role) const
     {
         return QVariant::fromValue(stopItem.data());
     }
+    else if (role == Roles::NameRole)
+    {
+        return stopItem->name();
+    }
     else if (role == Roles::DistanceRole)
     {
         return stopItem->distance();
@@ -58,6 +75,23 @@ QVariant StopsModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+bool StopsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid() || index.row() >= rowCount())
+    {
+        return false;
+    }
+
+    QPointer<StopItem> stopItem = m_stopsModel[index.row()];
+    if (role == Roles::TakenRole)
+    {
+        stopItem.data()->setTaken(value.toBool());
+        emit dataChanged(index, index, QVector<int>() << role);
+        return true;
+    }
+
+    return false;
+}
 void StopsModel::updatePosition(const QGeoPositionInfo& positionInfo)
 {
     const QGeoCoordinate& currentCoordinate = positionInfo.coordinate();
@@ -69,11 +103,6 @@ void StopsModel::updatePosition(const QGeoPositionInfo& positionInfo)
 
         m_stopsModel[i]->setDistance(distance_m);
     }
-}
-
-void StopsModel::setTaken(const QString &name)
-{
-     m_stopsPersistentData->setValue(QString("stops/%1").arg(name), true);
 }
 
 QHash<int, QByteArray> StopsModel::roleNames() const

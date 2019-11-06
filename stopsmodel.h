@@ -18,6 +18,7 @@ public:
     enum Roles
     {
         ObjectRole = Qt::UserRole,
+        NameRole,
         DistanceRole,
         TakenRole
     };
@@ -27,11 +28,10 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
     qreal progress();
     void updatePosition(const QGeoPositionInfo &oPositionInfo);
-
-    Q_INVOKABLE void setTaken(const QString& name);
 
 signals:
     void progressChanged(qreal progress);
